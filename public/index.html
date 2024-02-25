@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate Lookup</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <h1 class="text-3xl font-bold mb-6">Certificate Lookup</h1>
+    <label for="certificateNumber" class="block mb-2">Enter Certificate Number:</label>
+    <input type="text" id="certificateNumber" class="border border-gray-300 rounded-md p-2 mb-4">
+    <button onclick="lookupCertificate()" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Lookup</button>
+
+    <div id="result" class="mt-8"></div>
+
+    <script>
+        function lookupCertificate() {
+            const certificateNumber = document.getElementById('certificateNumber').value;
+            
+            fetch(`/lookup/${certificateNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('result');
+                    if (data.error) {
+                        resultDiv.innerHTML = `<p class="text-red-500">Error: ${data.error}</p>`;
+                    } else {
+                        resultDiv.innerHTML = `
+                            <h2 class="text-2xl font-bold">${data.Name}</h2>
+                            <p>Email: ${data.Email}</p>
+                            <p>Phone Number: ${data['Phone number']}</p>
+                            <p>Reference Number: ${data.CNUM}</p>
+                            <p>Event Name: React JSX Workshop</p>
+                            <a href="${data['Merged Doc URL - Certificate']}" download class="block mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Download Certificate</a>
+                        `;
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
